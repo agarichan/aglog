@@ -16,6 +16,7 @@
     "asctime",
     "codecov",
     "datefmt",
+    "freezegun",
     "levelname",
     "levelno",
     "PYPI",

@@ -1,12 +1,12 @@
 import logging
 
-import pytest
+import freezegun
 from utils import temporary_env_var
 
 import aglog.formatter.json_formatter as target
 
 
-@pytest.mark.freeze_time("1970-01-01 00:00:00")
+@freezegun.freeze_time("1970-01-01 00:00:00")
 @temporary_env_var("TZ", "UTC")
 def test_json_formatter():
     formatter = target.JsonFormatter()
