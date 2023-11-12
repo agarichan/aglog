@@ -14,9 +14,14 @@
   "cSpell.words": [
     "aglog",
     "asctime",
+    "codecov",
     "datefmt",
     "levelname",
     "levelno",
+    "PYPI",
+    "pyproject",
+    "pytest",
+    "PYTHONPATH",
     "sinfo"
   ],
   "python.testing.pytestArgs": [
