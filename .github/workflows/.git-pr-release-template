@@ -1,4 +1,4 @@
-Release <%= ENV['VERSION'] %>
+v<%= ENV['VERSION'] %>
 <% pull_requests.each do |pr| -%>
 <%=  pr.to_checklist_item %>
 <% end -%>
