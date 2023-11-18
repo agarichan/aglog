@@ -28,8 +28,8 @@ class WordFilter(logging.Filter):
         if target is None:
             return True  # pragma: no cover
 
-        check_select = any(w in target for w in self.includes) if self.include_type == "any" else all(w in target for w in self.includes)
-        check_ignore = any(w in target for w in self.excludes)
+        check_select = self.check_select(target)
+        check_ignore = self.check_ignore(target)
         if self.includes != [] and self.excludes != []:
             return check_select and not check_ignore
         if self.includes == [] and self.excludes != []:
@@ -37,6 +37,12 @@ class WordFilter(logging.Filter):
         if self.includes != [] and self.excludes == []:
             return check_select
         return True
+
+    def check_select(self: Self, target: str) -> bool:
+        return any(w in target for w in self.includes) if self.include_type == "any" else all(w in target for w in self.includes)
+
+    def check_ignore(self: Self, target: str) -> bool:
+        return any(w in target for w in self.excludes)
 
 
 class MessageWordFilter(WordFilter):
@@ -61,3 +67,15 @@ class NameFilter(WordFilter):
     @override
     def get_target(self: Self, record: logging.LogRecord) -> str | None:
         return record.name
+
+    @override
+    def check_select(self: Self, target: str) -> bool:
+        if "" in self.includes:
+            return True
+        return any(w.split(".") == target.split(".")[: len(w.split("."))] for w in self.includes)
+
+    @override
+    def check_ignore(self: Self, target: str) -> bool:
+        if "" in self.excludes:
+            return True
+        return any(w.split(".") == target.split(".")[: len(w.split("."))] for w in self.excludes)

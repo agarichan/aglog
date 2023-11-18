@@ -3,9 +3,9 @@ import logging
 import aglog.filter.word_filter as target
 
 
-def make_record(msg: str = "") -> logging.LogRecord:
+def make_record(msg: str = "", name="test") -> logging.LogRecord:
     return logging.LogRecord(
-        name="test",
+        name=name,
         level=logging.INFO,
         pathname="test.py",
         lineno=1,
@@ -73,3 +73,30 @@ def test_process_name_filter():
 
     filter = target.ProcessNameFilter(includes=["DummyProcess"])
     assert filter.filter(make_record("foo")) is False
+
+
+def test_name_filter():
+    filter = target.NameFilter()
+    assert filter.filter(make_record(name="test")) is True
+    assert filter.filter(make_record(name="test.test")) is True
+
+    filter = target.NameFilter(includes=["test"])
+    assert filter.filter(make_record(name="test")) is True
+    assert filter.filter(make_record(name="test.test")) is True
+    assert filter.filter(make_record(name="test2")) is False
+
+    filter = target.NameFilter(excludes=["test.test"])
+    assert filter.filter(make_record(name="test")) is True
+    assert filter.filter(make_record(name="test.test")) is False
+    assert filter.filter(make_record(name="test.test.test")) is False
+    assert filter.filter(make_record(name="test.test2")) is True
+
+    filter = target.NameFilter(includes=[""])
+    assert filter.filter(make_record(name="")) is True
+    assert filter.filter(make_record(name="test")) is True
+    assert filter.filter(make_record(name="test.test")) is True
+
+    filter = target.NameFilter(excludes=[""])
+    assert filter.filter(make_record(name="")) is False
+    assert filter.filter(make_record(name="test")) is False
+    assert filter.filter(make_record(name="test.test")) is False

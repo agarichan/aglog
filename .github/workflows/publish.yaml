@@ -1,9 +1,10 @@
 name: publish
 
 on:
-  push:
-    tags:
-      - v*
+  pull_request:
+    types: [closed]
+    branches:
+      - release
 
 jobs:
   publish:

@@ -96,14 +96,14 @@ class JsonFormatter(logging.Formatter):
     def create_path(self: Self, record: logging.LogRecord) -> str:
         path = f"{record.pathname}:{record.lineno}"
         if self.is_notebook:
-            path = f" {path}"
+            path = f" {path}"  # pragma: no cover
         return path
 
     def get_task_name(self: Self) -> str | None:
         try:
             task = asyncio.current_task()
             if task is None:
-                return None
+                return None  # pragma: no cover
         except RuntimeError:
             return None
         return task.get_name()
@@ -149,5 +149,5 @@ def is_notebook() -> bool:
         from IPython import get_ipython
 
         return bool(get_ipython())
-    except NameError:
-        return False
+    except NameError:  # pragma: no cover
+        return False  # pragma: no cover
