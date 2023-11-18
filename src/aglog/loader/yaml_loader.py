@@ -9,6 +9,8 @@ from typing import Any
 
 _env_pattern = re.compile(r"\$\{(.*)\}")
 
+logger = logging.getLogger(__name__)
+
 
 def load_yaml(file_path: str | Path) -> dict[str, Any]:
     import yaml
@@ -39,4 +41,4 @@ def load_yaml(file_path: str | Path) -> dict[str, Any]:
 def dict_config_from_yaml(file_path: str | Path) -> None:
     conf = load_yaml(file_path)
     logging.config.dictConfig(conf)
-    logging.debug("Logging configured")
+    logger.debug("Logging configured")

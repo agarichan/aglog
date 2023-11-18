@@ -55,3 +55,9 @@ class ProcessNameFilter(WordFilter):
     @override
     def get_target(self: Self, record: logging.LogRecord) -> str | None:
         return record.processName
+
+
+class NameFilter(WordFilter):
+    @override
+    def get_target(self: Self, record: logging.LogRecord) -> str | None:
+        return record.name

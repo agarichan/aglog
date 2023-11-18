@@ -34,8 +34,3 @@ class QueueHandlerListener(QueueHandler):
         if thread is not None:
             thread.join(timeout=self.stop_timeout)
             self.listener._thread = None  # noqa: SLF001
-
-
-class AsyncQueueHandlerLister:
-    def __init__(self: Self) -> None:
-        ...

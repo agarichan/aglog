@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 from enum import Enum
@@ -23,6 +24,7 @@ class RecordKey(str, Enum):
     FUNC_NAME = "funcName"
     THREAD_NAME = "threadName"
     PROCESS_NAME = "processName"
+    TASK_NAME = "taskName"
     PROCESS = "process"
     THREAD = "thread"
     MODULE = "module"
@@ -70,6 +72,7 @@ class JsonFormatter(logging.Formatter):
             RecordKey.THREAD_NAME: record.threadName,
             RecordKey.THREAD: record.thread,
             RecordKey.PROCESS_NAME: record.processName,
+            RecordKey.TASK_NAME: self.get_task_name(),
             RecordKey.PROCESS: record.process,
             RecordKey.CREATED: record.created,
             RecordKey.EXC_INFO: None,
@@ -96,6 +99,15 @@ class JsonFormatter(logging.Formatter):
             path = f" {path}"
         return path
 
+    def get_task_name(self: Self) -> str | None:
+        try:
+            task = asyncio.current_task()
+            if task is None:
+                return None
+        except RuntimeError:
+            return None
+        return task.get_name()
+
     def filter_keys(
         self: Self,
         dict_record: dict[RecordKey, str | int | float | bool | list[str] | None],
@@ -119,6 +131,17 @@ class JsonFormatter(logging.Formatter):
             lexers.JsonLexer(),
             formatters.TerminalFormatter(),
         ).strip("\n")
+
+
+class JsonColorFormatter(JsonFormatter):
+    def __init__(
+        self: Self,
+        *,
+        keys: list[RecordKey | ExtraKey] | None = None,
+        indent: int | None = None,
+        datefmt: str | None = None,
+    ) -> None:
+        super().__init__(keys=keys, indent=indent, datefmt=datefmt, colorize=True)
 
 
 def is_notebook() -> bool:

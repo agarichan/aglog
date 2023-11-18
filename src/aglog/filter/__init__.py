@@ -1,1 +1,1 @@
-from .word_filter import MessageWordFilter, ProcessNameFilter, ThreadNameFilter, WordFilter
+from .word_filter import MessageWordFilter, NameFilter, ProcessNameFilter, ThreadNameFilter, WordFilter
