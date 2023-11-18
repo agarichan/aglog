@@ -1,4 +1,4 @@
-__version__ = "0.1.2"
+__version__ = "0.0.0"
 
 from .filter import MessageWordFilter, NameFilter, ProcessNameFilter, ThreadNameFilter
 from .formatter import JsonColorFormatter, JsonFormatter
