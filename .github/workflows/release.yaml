@@ -31,8 +31,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          curl -sSf https://rye-up.com/get | RYE_INSTALL_OPTION="--yes" bash
-          source "$HOME/.rye/env"
+          curl -sSL https://github.com/mitsuhiko/rye/releases/latest/download/rye-x86_64-linux.gz --output rye.gz
+          gunzip rye.gz
+          chmod +x rye
+          sudo mv rye /usr/local/bin/
 
       - name: Update version
         run: |
