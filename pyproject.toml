@@ -1,6 +1,6 @@
 [project]
 name = "aglog"
-version = "0.1.1"
+version = "0.1.2"
 description = "Logging support tools for python"
 authors = [{ name = "agarichan", email = "ag4r1chan@gmail.com" }]
 dependencies = ["PyYAML>=6.0.1", "typing_extensions>=4.8.0", "Pygments>=2.16.1"]
