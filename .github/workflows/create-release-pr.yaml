@@ -37,4 +37,4 @@ jobs:
           GIT_PR_RELEASE_BRANCH_PRODUCTION: release
           GIT_PR_RELEASE_BRANCH_STAGING: main
           GIT_PR_RELEASE_LABELS: release
-          GIT_PR_RELEASE_TEMPLATE: .github/workflows/git-pr-release-template
+          GIT_PR_RELEASE_TEMPLATE: .github/workflows/.git-pr-release-template
