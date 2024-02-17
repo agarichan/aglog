@@ -11,24 +11,6 @@
     "--unfixable=F401,F841"
   ],
   "python.analysis.typeCheckingMode": "basic",
-  "cSpell.words": [
-    "aglog",
-    "aiohttp",
-    "asctime",
-    "codecov",
-    "datefmt",
-    "dotenv",
-    "freezegun",
-    "levelname",
-    "levelno",
-    "popleft",
-    "PYPI",
-    "pyproject",
-    "pytest",
-    "PYTHONPATH",
-    "sinfo",
-    "timespec"
-  ],
   "python.testing.pytestArgs": [
     "-s", "--debug-log", "--cov=src", "--cov-report=xml", "tests"
   ],
