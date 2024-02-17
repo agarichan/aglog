@@ -62,7 +62,7 @@ def test_slack_handler(emit_patch_logger: logging.Logger):
     assert request.json["attachments"][0]["color"] == "danger"
 
 
-@patch.object(target.SlackHandler, "retry_delay", 0.001)
+@patch.object(target.SlackHandler, "retry_delay", 0)
 @patch.object(target.SlackHandler, "retry_attempts", 2)
 def test_slack_handler_exception(mock_aioresponse: aioresponses, logger: logging.Logger):
     mock = MagicMock(return_value=CallbackResult(status=404, reason="test"))
@@ -71,11 +71,11 @@ def test_slack_handler_exception(mock_aioresponse: aioresponses, logger: logging
     handler = target.SlackHandler(token="test", channel="channel", rate_limit=100)  # noqa: S106
     logger.addHandler(handler)
     logger.info("test")
-    time.sleep(0.05)
+    time.sleep(0.08)
     assert mock.call_count == target.SlackHandler.retry_attempts
 
 
-@patch.object(target.SlackHandler, "retry_delay", 0.001)
+@patch.object(target.SlackHandler, "retry_delay", 0)
 @patch.object(target.SlackHandler, "retry_attempts", 2)
 def test_slack_handler_exception2(mock_aioresponse: aioresponses, logger: logging.Logger):
     mock = MagicMock(return_value=CallbackResult(status=200, payload={"ok": True}))
