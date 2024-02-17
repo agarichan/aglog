@@ -71,7 +71,7 @@ def test_slack_handler_exception(mock_aioresponse: aioresponses, logger: logging
     handler = target.SlackHandler(token="test", channel="channel", rate_limit=100)  # noqa: S106
     logger.addHandler(handler)
     logger.info("test")
-    time.sleep(0.08)
+    handler.close()
     assert mock.call_count == target.SlackHandler.retry_attempts
 
 
@@ -89,5 +89,5 @@ def test_slack_handler_exception2(mock_aioresponse: aioresponses, logger: loggin
     mock = MagicMock(return_value=CallbackResult(status=200, payload={"error": "test"}))
     mock_aioresponse.post(target.SlackHandler.URL, callback=mock, repeat=True)
     logger.info("test")
-    time.sleep(0.03)
+    handler.close()
     assert mock.call_count == target.SlackHandler.retry_attempts
