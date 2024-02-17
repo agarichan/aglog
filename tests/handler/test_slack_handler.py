@@ -1,9 +1,9 @@
 import logging
 import time
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import pytest
-from aioresponses import aioresponses
+from aioresponses import CallbackResult, aioresponses
 
 from aglog.handler import slack_handler as target
 
@@ -65,31 +65,29 @@ def test_slack_handler(emit_patch_logger: logging.Logger):
 @patch.object(target.SlackHandler, "retry_delay", 0.001)
 @patch.object(target.SlackHandler, "retry_attempts", 2)
 def test_slack_handler_exception(mock_aioresponse: aioresponses, logger: logging.Logger):
-    retry_attempts = target.SlackHandler.retry_attempts
-    assert retry_attempts == 2
-    for _ in range(retry_attempts):
-        mock_aioresponse.post(target.SlackHandler.URL, status=503)
+    mock = MagicMock(return_value=CallbackResult(status=404, reason="test"))
+    mock_aioresponse.post(target.SlackHandler.URL, callback=mock, repeat=True)
 
-    handler = target.SlackHandler(token="test", channel="channel", rate_limit=retry_attempts)  # noqa: S106
+    handler = target.SlackHandler(token="test", channel="channel", rate_limit=100)  # noqa: S106
     logger.addHandler(handler)
     logger.info("test")
     time.sleep(0.05)
-    assert len(mock_aioresponse._responses) == retry_attempts
+    assert mock.call_count == target.SlackHandler.retry_attempts
 
 
 @patch.object(target.SlackHandler, "retry_delay", 0.001)
 @patch.object(target.SlackHandler, "retry_attempts", 2)
 def test_slack_handler_exception2(mock_aioresponse: aioresponses, logger: logging.Logger):
-    mock_aioresponse.post(target.SlackHandler.URL, status=200, payload={"ok": True})
+    mock = MagicMock(return_value=CallbackResult(status=200, payload={"ok": True}))
+    mock_aioresponse.post(target.SlackHandler.URL, callback=mock)
     handler = target.SlackHandler(token="test", channel="channel", rate_limit=100)  # noqa: S106
     logger.addHandler(handler)
     logger.info("test")
     time.sleep(0.03)
-    assert len(mock_aioresponse._responses) == 1
+    assert mock.call_count == 1
 
-    for _ in range(target.SlackHandler.retry_attempts):
-        mock_aioresponse.post(target.SlackHandler.URL, status=200, payload={"error": "test"})
-        mock_aioresponse.post(target.SlackHandler.URL, status=200, payload={"error": "test"})
+    mock = MagicMock(return_value=CallbackResult(status=200, payload={"error": "test"}))
+    mock_aioresponse.post(target.SlackHandler.URL, callback=mock, repeat=True)
     logger.info("test")
     time.sleep(0.03)
-    assert len(mock_aioresponse._responses) == target.SlackHandler.retry_attempts + 1
+    assert mock.call_count == target.SlackHandler.retry_attempts

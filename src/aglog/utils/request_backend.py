@@ -93,7 +93,7 @@ class RequestBackend:
         return True
 
     async def _send_request(self: Self, session: aiohttp.ClientSession, request: Request, semaphore: TimeSemaphore) -> None:
-        send = HttpClient(session, self.http_response_handler, self.retry_exceptions).send
+        send = HttpClient(session, self.http_response_handler).send
 
         @async_retry(self.retry_attempts, delay=self.retry_delay, exceptions=self.retry_exceptions)
         async def _send() -> None:
@@ -116,11 +116,9 @@ class HttpClient:
         self: Self,
         session: aiohttp.ClientSession,
         http_response_handler: Callable[[aiohttp.ClientResponse], Awaitable[None]] | None = None,
-        retry_exceptions: tuple[type[BaseException], ...] = (aiohttp.ClientError,),
     ) -> None:
         self.session = session
         self.http_response_handler = http_response_handler
-        self.retry_exceptions = retry_exceptions
 
     async def send(self: Self, r: Request) -> None:
         if r.method == "GET":
