@@ -7,7 +7,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-_env_pattern = re.compile(r"\$\{(.*)\}")
+_env_pattern = re.compile(r".*\$\{([^}^{]+)\}.*")
 
 logger = logging.getLogger(__name__)
 
@@ -23,11 +23,12 @@ def load_yaml(file_path: str | Path) -> dict[str, Any]:
 
     def env_var_constructor(loader, node):  # noqa: ANN001 ANN202
         value = loader.construct_scalar(node)
-        m = _env_pattern.match(value)
-        if not m:
-            return value  # pragma: no cover
-        key, default = m.group(1).split(":-") if len(m.group(1).split(":-")) > 1 else (m.group(1), None)
-        return os.environ.get(key, default)
+        for m in _env_pattern.finditer(value):
+            env_var = m.group(1)
+            key, default = env_var.split(":-") if ":-" in env_var else (env_var, None)
+            replacement = os.environ.get(key, default)
+            value = value.replace("${%s}" % env_var, replacement)
+        return value
 
     yaml.add_implicit_resolver("!env_var", _env_pattern, None, yaml.SafeLoader)
     yaml.add_constructor("!env_var", env_var_constructor, yaml.SafeLoader)

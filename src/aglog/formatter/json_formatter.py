@@ -40,19 +40,21 @@ ExtraKey = str
 class JsonFormatter(logging.Formatter):
     DEFAULT_KEYS: ClassVar[list[RecordKey]] = [RecordKey.TIME, RecordKey.LEVEL_NAME, RecordKey.MESSAGE]
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self: Self,
         *,
         keys: list[RecordKey | ExtraKey] | None = None,
         indent: int | None = None,
         datefmt: str | None = None,
         colorize: bool = False,
+        code: bool = False,
     ) -> None:
         super().__init__(datefmt=datefmt)
         self.keys = keys or self.DEFAULT_KEYS
         self.indent = indent
         self.colorize = colorize
         self.is_notebook = is_notebook()
+        self.code = code
 
     @override
     def format(self: Self, record: logging.LogRecord) -> str:
@@ -87,6 +89,9 @@ class JsonFormatter(logging.Formatter):
 
         filtered_dict_record = self.filter_keys(dict_record=dict_record, record=record)
         json_record = json.dumps(filtered_dict_record, ensure_ascii=False, indent=self.indent)
+
+        if self.code:
+            json_record = f"```\n{json_record}\n```"
 
         if self.colorize:
             return self.colorize_json(json_record)
@@ -146,7 +151,7 @@ class JsonColorFormatter(JsonFormatter):
 
 def is_notebook() -> bool:
     try:
-        from IPython import get_ipython
+        from IPython import get_ipython  # type: ignore
 
         return bool(get_ipython())
     except NameError:  # pragma: no cover
