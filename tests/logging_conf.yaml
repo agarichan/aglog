@@ -3,7 +3,7 @@ disable_existing_loggers: False
 formatters:
   json:
     (): aglog.JsonColorFormatter
-    datefmt: "%Y-%m-%dT%H:%M:%S"
+    datefmt: "%Y-%m-%dT%H:%M:%S.%f"
     indent: 2
     keys:
       - asctime
