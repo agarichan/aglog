@@ -37,10 +37,17 @@ handlers:
   test:
     class: logging.StreamHandler
     formatter: simple
-    level: DEBUG
     stream: ext://sys.stdout
+  slack:
+    (): aglog.SlackHandler
+    token: ${SLACK_TOKEN}
+    channel: "#test"
 loggers:
   "":
     level: DEBUG
     handlers:
       - console
+  slack:
+    level: INFO
+    handlers:
+      - slack

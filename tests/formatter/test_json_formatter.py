@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 import freezegun
-from utils import temporary_env_var
+from test_utils import temporary_env_var
 
 import aglog.formatter.json_formatter as target
 
@@ -89,6 +89,10 @@ def test_json_formatter():
     # colorize
     formatter = target.JsonFormatter(colorize=True)
     assert "\x1b" in formatter.format(record)
+
+    # code
+    formatter = target.JsonFormatter(code=True)
+    assert formatter.format(record).startswith("```")
 
 
 def test_json_color_formatter():

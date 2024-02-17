@@ -1,3 +1,4 @@
+import atexit
 import logging
 from logging.config import ConvertingList
 from logging.handlers import QueueHandler, QueueListener
@@ -24,6 +25,7 @@ class QueueHandlerListener(QueueHandler):
 
         if auto_run:
             self.start()
+            atexit.register(self.stop)
 
     def start(self: Self) -> None:
         self.listener.start()
