@@ -11,3 +11,10 @@ wheels/
 
 # test
 coverage.xml
+.coverage
+
+# .env
+.env
+
+# mac
+.DS_Store

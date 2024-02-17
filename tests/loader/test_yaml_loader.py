@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 
 import pytest
-from utils import temporary_env_var
+from test_utils import temporary_env_var
 
 import aglog.loader.yaml_loader as target
 
@@ -20,6 +20,11 @@ handlers:
 root:
   level: ${LOG_LEVEL:-WARNING}
   handlers: [console]
+dummy:
+  none: ${TEST:-test}
+  prefix: prefix.${TEST:-test}
+  postfix: ${TEST:-test}.postfix
+  both: prefix.${TEST:-test}.postfix
 """
 
 no_env_var_config = """
@@ -51,6 +56,14 @@ def test_load_yaml(tmp_path: Path) -> None:
     res = target.load_yaml(no_env_yaml_path)
     assert res == {"version": 1}
 
+    # prefix postfix
+    with temporary_env_var("TEST", "test"):
+        res = target.load_yaml(yaml_path)
+    assert res["dummy"]["none"] == "test"
+    assert res["dummy"]["postfix"] == "test.postfix"
+    assert res["dummy"]["prefix"] == "prefix.test"
+    assert res["dummy"]["both"] == "prefix.test.postfix"
+
 
 def test_dict_config_from_yaml(tmp_path: Path) -> None:
     yaml_path = tmp_path / "test.yaml"
@@ -58,9 +71,9 @@ def test_dict_config_from_yaml(tmp_path: Path) -> None:
     with yaml_path.open("w") as f:
         f.write(test_config)
 
-    with temporary_env_var("LOG_LEVEL", "DEBUG"):
+    with temporary_env_var("LOG_LEVEL", "INFO"):
         target.dict_config_from_yaml(yaml_path)
-    assert logging.getLogger().level == logging.DEBUG
+    assert logging.getLogger().level == logging.INFO
 
     target.dict_config_from_yaml(yaml_path)
     assert logging.getLogger().level == logging.WARNING

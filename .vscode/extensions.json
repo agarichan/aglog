@@ -1,7 +1,6 @@
 {
   "recommendations": [
-    "ms-pytho.python",
+    "ms-python.python",
     "charliermarsh.ruff",
-    "streetsidesoftware.code-spell-checker",
   ]
 }

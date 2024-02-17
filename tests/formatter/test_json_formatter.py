@@ -1,7 +1,8 @@
+import asyncio
 import logging
 
 import freezegun
-from utils import temporary_env_var
+from test_utils import temporary_env_var
 
 import aglog.formatter.json_formatter as target
 
@@ -73,3 +74,27 @@ def test_json_formatter():
     record.stack_info = "test"
     formatter = target.JsonFormatter(keys=[target.RecordKey.STACK_INFO])
     assert formatter.format(record) == '{"stack_info": ["test"]}'
+
+    # task_name
+    async def check():
+        target.JsonFormatter().get_task_name()
+
+    async def test_task():
+        task = asyncio.create_task(check(), name="test_task")
+        await asyncio.sleep(0)
+        await task
+
+    asyncio.run(test_task())
+
+    # colorize
+    formatter = target.JsonFormatter(colorize=True)
+    assert "\x1b" in formatter.format(record)
+
+    # code
+    formatter = target.JsonFormatter(code=True)
+    assert formatter.format(record).startswith("```")
+
+
+def test_json_color_formatter():
+    formatter = target.JsonColorFormatter()
+    assert formatter.colorize is True
