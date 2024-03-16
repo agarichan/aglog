@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-import logging
-import logging.config
 import os
 import re
 from pathlib import Path
 from typing import Any
 
-_env_pattern = re.compile(r".*\$\{([^}^{]+)\}.*")
+from .loader import load_dict_config
 
-logger = logging.getLogger(__name__)
+_env_pattern = re.compile(r".*\$\{([^}^{]+)\}.*")
 
 
 def load_yaml(file_path: str | Path) -> dict[str, Any]:
@@ -41,5 +39,4 @@ def load_yaml(file_path: str | Path) -> dict[str, Any]:
 
 def dict_config_from_yaml(file_path: str | Path) -> None:
     conf = load_yaml(file_path)
-    logging.config.dictConfig(conf)
-    logger.debug("Logging configured")
+    load_dict_config(conf)

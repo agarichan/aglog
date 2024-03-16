@@ -1,3 +1,4 @@
+import logging
 import os
 from collections.abc import Generator
 from contextlib import contextmanager
@@ -14,3 +15,13 @@ def temporary_env_var(key: str, value: str) -> Generator:
             del os.environ[key]
         else:
             os.environ[key] = original_value
+
+
+class CunstomHandler(logging.Handler):
+    def __init__(self, x: int, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.x = x
+        self.call_count = 0
+
+    def emit(self, record: logging.LogRecord) -> None:
+        self.call_count += 1
