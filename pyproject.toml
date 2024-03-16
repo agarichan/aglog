@@ -1,6 +1,6 @@
 [project]
 name = "aglog"
-version = "0.1.4"
+version = "0.1.5"
 description = "Logging support tools for python"
 authors = [{ name = "agarichan", email = "ag4r1chan@gmail.com" }]
 dependencies = [
