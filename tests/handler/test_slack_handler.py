@@ -29,7 +29,7 @@ def logger():
     for handler in logger.handlers:
         handler.close()
     logger.handlers.clear()
-    logger.level = logging.WARN
+    logger.level = logging.WARNING
 
 
 @pytest.fixture()

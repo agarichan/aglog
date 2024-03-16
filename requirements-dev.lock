@@ -86,7 +86,7 @@ pure-eval==0.2.2
 pygments==2.16.1
     # via aglog
     # via ipython
-pyright==1.1.350
+pyright==1.1.354
 pytest==7.4.3
     # via pytest-asyncio
     # via pytest-cov
@@ -101,7 +101,7 @@ pyyaml==6.0.1
 pyzmq==25.1.1
     # via ipykernel
     # via jupyter-client
-ruff==0.1.5
+ruff==0.3.3
 setuptools==69.0.2
     # via nodeenv
 six==1.16.0

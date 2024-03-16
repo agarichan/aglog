@@ -11,11 +11,9 @@ P = ParamSpec("P")
 
 
 class _DummySemaphore:
-    async def acquire(self: Self) -> None:
-        ...
+    async def acquire(self: Self) -> None: ...
 
-    def release(self: Self) -> None:
-        ...
+    def release(self: Self) -> None: ...
 
 
 class TimeSemaphore:
