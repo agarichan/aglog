@@ -51,11 +51,11 @@ def test_dict_config_queue_handler_listener():
                 "formatter": "simple",
             },
             "default_handler": {
-                "()": "logging.NullHandler",
+                "class": "logging.NullHandler",
                 "formatter": "simple",
             },
             "z_queue_listener_handler": {
-                "class": "aglog.handler.queue_listener_handler.QueueListenerHandler",
+                "()": "aglog.handler.queue_listener_handler.QueueListenerHandler",
                 "handlers": [
                     "custom_handler",
                     "default_handler",
